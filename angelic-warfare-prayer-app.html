@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Angelic Warfare Confraternity</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Cinzel:wght@400;600;700&family=Cinzel+Decorative:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --midnight:#0a0c14;--deep:#0f1220;--panel:#141826;--border:#2a2f45;
+    --gold:#c9a84c;--gold-light:#e8c97a;--gold-dim:rgba(201,168,76,0.15);
+    --white:#f0ece4;--muted:#8a8fa8;--crimson:#7a1f2e;--text:#d8d4cc;
+    --green:#3a6a3a;--green-dim:rgba(58,106,58,0.2);
+  }
+  body{background:var(--midnight);color:var(--text);font-family:'EB Garamond',Georgia,serif;font-size:17px;line-height:1.7;min-height:100vh;overflow-x:hidden}
+  body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(ellipse at 50% 0%,rgba(201,168,76,0.06) 0%,transparent 60%),radial-gradient(ellipse at 50% 100%,rgba(122,31,46,0.08) 0%,transparent 60%);pointer-events:none;z-index:0}
+  .container{max-width:760px;margin:0 auto;padding:0 20px 60px;position:relative;z-index:1}
+  header{text-align:center;padding:48px 0 32px;border-bottom:1px solid var(--border);margin-bottom:40px}
+  .cross-icon{display:inline-block;font-size:28px;color:var(--gold);letter-spacing:6px;margin-bottom:16px;opacity:.8}
+  header h1{font-family:'Cinzel Decorative',serif;font-size:clamp(16px,4vw,22px);font-weight:400;color:var(--gold-light);letter-spacing:.08em;line-height:1.4;text-shadow:0 0 40px rgba(201,168,76,0.3)}
+  .header-sub{font-family:'EB Garamond',serif;font-size:14px;color:var(--muted);margin-top:10px;font-style:italic}
+  .date-display{font-family:'Cinzel',serif;font-size:12px;letter-spacing:.2em;color:var(--gold);opacity:.7;margin-top:14px;text-transform:uppercase}
+  .nav{display:flex;gap:2px;background:var(--panel);border:1px solid var(--border);border-radius:3px;padding:3px;margin-bottom:36px}
+  .nav-tab{flex:1;padding:10px 4px;background:transparent;border:none;cursor:pointer;font-family:'Cinzel',serif;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border-radius:2px;transition:all .25s ease}
+  .nav-tab:hover{color:var(--gold-light)}
+  .nav-tab.active{background:var(--gold-dim);color:var(--gold-light);border:1px solid rgba(201,168,76,0.25)}
+  .section-title{font-family:'Cinzel',serif;font-size:11px;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);opacity:.7;margin-bottom:20px;display:flex;align-items:center;gap:12px}
+  .section-title::after{content:'';flex:1;height:1px;background:linear-gradient(to right,var(--border),transparent)}
+  .prayer-card{background:var(--panel);border:1px solid var(--border);border-left:3px solid var(--gold);padding:28px 30px;margin-bottom:20px;transition:border-color .2s}
+  .prayer-card.completed{border-left-color:var(--green);opacity:.65}
+  .prayer-card.completed .prayer-title-text{text-decoration:line-through;text-decoration-color:var(--green)}
+  .prayer-title{font-family:'Cinzel',serif;font-size:14px;letter-spacing:.1em;color:var(--gold-light);margin-bottom:16px;display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+  .prayer-text{font-size:17px;line-height:2;color:var(--white);font-style:italic}
+  .check-btn{flex-shrink:0;width:26px;height:26px;border:1px solid var(--border);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:2px;color:var(--muted);font-size:13px;transition:all .2s;margin-top:2px}
+  .check-btn:hover{border-color:var(--gold);color:var(--gold)}
+  .prayer-card.completed .check-btn{border-color:var(--green);color:#5aaa5a;background:var(--green-dim)}
+  .progress-wrap{margin-bottom:28px;background:var(--panel);border:1px solid var(--border);padding:20px 24px}
+  .progress-label{display:flex;justify-content:space-between;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.15em;color:var(--muted);text-transform:uppercase;margin-bottom:12px}
+  .progress-label span:last-child{color:var(--gold)}
+  .progress-bar{height:3px;background:var(--border)}
+  .progress-fill{height:100%;background:linear-gradient(to right,#7a1f2e,var(--gold));transition:width .5s ease}
+  .already-done-btn{display:block;width:100%;padding:13px;background:transparent;border:1px solid rgba(201,168,76,0.3);color:var(--gold);font-family:'Cinzel',serif;font-size:10px;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;transition:all .2s;margin-bottom:32px}
+  .already-done-btn:hover{background:var(--gold-dim);border-color:var(--gold)}
+  .form-toggle{display:flex;gap:2px;margin-bottom:28px;background:var(--deep);border:1px solid var(--border);padding:3px;border-radius:2px}
+  .form-btn{flex:1;padding:9px 8px;background:transparent;border:none;cursor:pointer;font-family:'Cinzel',serif;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);border-radius:1px;transition:all .2s}
+  .form-btn.active{background:rgba(122,31,46,0.25);color:var(--white);border:1px solid rgba(122,31,46,0.4)}
+  .form-btn:hover:not(.active){color:var(--gold-light)}
+  .hm-card{background:var(--panel);border:1px solid var(--border);border-left:3px solid var(--gold);padding:14px 22px;margin-bottom:7px;transition:border-color .2s,opacity .2s}
+  .hm-card.completed{border-left-color:var(--green);opacity:.6}
+  .hm-card.completed .hm-title-text{text-decoration:line-through;text-decoration-color:var(--green)}
+  .hm-header{display:flex;align-items:center;gap:14px}
+  .hm-number{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.15em;color:var(--muted);flex-shrink:0;min-width:24px}
+  .hm-title-text{font-family:'Cinzel',serif;font-size:13px;letter-spacing:.07em;color:var(--gold-light);flex:1}
+  .hm-response{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.12em;color:var(--gold);opacity:.45;text-transform:uppercase;flex-shrink:0}
+  #longFormViewer{display:none}
+  #longFormViewer.visible{display:block}
+  .lf-dots{display:flex;justify-content:center;gap:7px;margin-bottom:26px;flex-wrap:wrap;padding:0 4px}
+  .lf-dot{width:10px;height:10px;border-radius:50%;background:var(--border);border:none;cursor:pointer;transition:all .2s;padding:0;flex-shrink:0}
+  .lf-dot.current{background:var(--gold);transform:scale(1.3);box-shadow:0 0 8px rgba(201,168,76,0.45)}
+  .lf-dot.done{background:var(--green)}
+  .lf-panel{background:var(--panel);border:1px solid var(--border);border-top:3px solid var(--gold);padding:36px 38px 30px}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+  .lf-panel-inner{animation:fadeIn .22s ease}
+  .lf-num{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.28em;color:var(--gold);opacity:.5;text-transform:uppercase;margin-bottom:10px}
+  .lf-title{font-family:'Cinzel',serif;font-size:17px;letter-spacing:.08em;color:var(--gold-light);margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid var(--border);line-height:1.4}
+  .lf-petition{font-size:18px;line-height:2.05;color:var(--white);font-style:italic;margin-bottom:24px}
+  .lf-verse{font-size:14px;line-height:1.8;color:var(--muted);border-left:2px solid rgba(201,168,76,0.2);padding-left:18px;margin-bottom:28px;font-style:italic}
+  .lf-hail{font-family:'Cinzel',serif;font-size:12px;letter-spacing:.22em;color:var(--gold);opacity:.65;text-transform:uppercase;margin-bottom:28px}
+  .lf-nav{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:16px;border-top:1px solid var(--border)}
+  .lf-arrow{background:transparent;border:1px solid var(--border);color:var(--muted);font-family:'Cinzel',serif;font-size:10px;letter-spacing:.15em;text-transform:uppercase;padding:10px 18px;cursor:pointer;transition:all .2s}
+  .lf-arrow:hover:not(:disabled){border-color:var(--gold);color:var(--gold-light)}
+  .lf-arrow:disabled{opacity:.2;cursor:default}
+  .lf-mark-area{display:flex;align-items:center;gap:8px}
+  .lf-mark-btn{width:28px;height:28px;border:1px solid var(--border);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:2px;color:var(--muted);font-size:14px;transition:all .2s}
+  .lf-mark-btn:hover{border-color:var(--gold);color:var(--gold)}
+  .lf-mark-btn.done{border-color:var(--green);color:#5aaa5a;background:var(--green-dim)}
+  .lf-mark-label{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
+  .lf-counter{font-family:'Cinzel',serif;font-size:11px;letter-spacing:.1em;color:var(--muted)}
+  .reset-btn{display:block;width:100%;padding:12px;background:transparent;border:1px solid var(--border);color:var(--muted);font-family:'Cinzel',serif;font-size:10px;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;transition:all .2s;margin-top:20px}
+  .reset-btn:hover{border-color:var(--gold);color:var(--gold)}
+  .log-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-bottom:12px}
+  .log-day-labels{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-bottom:8px}
+  .log-day-label{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;text-align:center}
+  .log-cell{aspect-ratio:1;border-radius:2px;position:relative;cursor:default}
+  .log-cell.full{background:var(--green);box-shadow:0 0 5px rgba(58,106,58,0.4)}
+  .log-cell.partial{background:rgba(201,168,76,0.3);border:1px solid rgba(201,168,76,0.25)}
+  .log-cell.empty{background:var(--panel);border:1px solid var(--border)}
+  .log-cell.today{box-shadow:0 0 0 2px var(--gold)}
+  .log-tooltip{position:absolute;bottom:calc(100% + 5px);left:50%;transform:translateX(-50%);background:var(--deep);border:1px solid var(--border);padding:4px 8px;font-family:'Cinzel',serif;font-size:9px;color:var(--text);white-space:nowrap;z-index:10;pointer-events:none;opacity:0;transition:opacity .15s}
+  .log-cell:hover .log-tooltip{opacity:1}
+  .log-legend{display:flex;gap:20px;margin-top:14px;justify-content:center}
+  .log-legend-item{display:flex;align-items:center;gap:7px;font-family:'Cinzel',serif;font-size:9px;letter-spacing:.1em;color:var(--muted);text-transform:uppercase}
+  .log-legend-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+  .log-month-label{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.2em;color:var(--gold);opacity:.6;text-transform:uppercase;margin-bottom:16px;text-align:center}
+  .reminder-panel{background:var(--panel);border:1px solid var(--border);padding:24px 28px;margin-bottom:20px}
+  .reminder-row{display:flex;align-items:center;gap:16px;margin-bottom:18px;flex-wrap:wrap}
+  .reminder-label{font-family:'Cinzel',serif;font-size:11px;letter-spacing:.18em;color:var(--muted);text-transform:uppercase;flex:1;min-width:140px}
+  .reminder-toggle{position:relative;width:44px;height:24px;flex-shrink:0}
+  .reminder-toggle input{opacity:0;width:0;height:0;position:absolute}
+  .reminder-slider{position:absolute;inset:0;background:var(--border);border-radius:12px;cursor:pointer;transition:.3s}
+  .reminder-slider::before{content:'';position:absolute;width:18px;height:18px;left:3px;top:3px;background:var(--muted);border-radius:50%;transition:.3s}
+  .reminder-toggle input:checked+.reminder-slider{background:rgba(201,168,76,0.3)}
+  .reminder-toggle input:checked+.reminder-slider::before{transform:translateX(20px);background:var(--gold)}
+  .time-input{background:var(--deep);border:1px solid var(--border);color:var(--gold-light);font-family:'Cinzel',serif;font-size:14px;padding:8px 12px;width:130px;outline:none;transition:border-color .2s}
+  .time-input:focus{border-color:var(--gold)}
+  .time-input:disabled{opacity:.3;cursor:not-allowed}
+  .reminder-note{font-size:13px;color:var(--muted);font-style:italic;line-height:1.7;margin-top:8px}
+  .reminder-status{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.15em;color:var(--gold);opacity:.7;text-transform:uppercase;margin-top:10px;min-height:16px}
+  .quote-card{background:var(--panel);border:1px solid var(--border);border-top:3px solid var(--crimson);padding:32px 30px;margin-bottom:20px;position:relative}
+  .quote-mark{font-family:'Cinzel Decorative',serif;font-size:60px;color:var(--crimson);opacity:.3;line-height:.8;position:absolute;top:22px;left:24px}
+  .quote-text{font-size:18px;line-height:1.85;color:var(--white);font-style:italic;padding-left:20px;position:relative;z-index:1}
+  .quote-ref{margin-top:16px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.2em;color:var(--gold);opacity:.7;text-transform:uppercase}
+  .inspiration-card{background:var(--panel);border:1px solid var(--border);padding:28px 30px;margin-bottom:20px}
+  .inspiration-source{font-family:'Cinzel',serif;font-size:11px;letter-spacing:.2em;color:var(--gold);opacity:.6;text-transform:uppercase;margin-bottom:14px}
+  .inspiration-text{font-size:16px;line-height:1.85;color:var(--text);font-style:italic}
+  .tab-content{display:none}
+  .tab-content.active{display:block;animation:fadeIn .3s ease}
+  .ornament{text-align:center;color:var(--gold);opacity:.3;font-size:18px;letter-spacing:8px;margin:32px 0}
+  footer{text-align:center;padding:32px 0 20px;border-top:1px solid var(--border);margin-top:48px}
+  footer p{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;line-height:2}
+  ::-webkit-scrollbar{width:4px}
+  ::-webkit-scrollbar-track{background:var(--midnight)}
+  ::-webkit-scrollbar-thumb{background:var(--border)}
+</style>
+<link rel="manifest" href="manifest.json">
+<script>if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js');</script>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="cross-icon">✠</div>
+    <h1>Angelic Warfare<br>Confraternity</h1>
+    <div class="header-sub">Seeking purity of heart with St. Thomas Aquinas</div>
+    <div class="date-display" id="dateDisplay"></div>
+  </header>
+
+  <nav class="nav">
+    <button class="nav-tab active" onclick="switchTab('prayers',this)">Daily Prayers</button>
+    <button class="nav-tab" onclick="switchTab('scripture',this)">Scripture</button>
+    <button class="nav-tab" onclick="switchTab('inspiration',this)">Wisdom</button>
+    <button class="nav-tab" onclick="switchTab('log',this)">Fidelity Log</button>
+    <button class="nav-tab" onclick="switchTab('reminder',this)">Reminder</button>
+  </nav>
+
+  <!-- PRAYERS -->
+  <div id="tab-prayers" class="tab-content active">
+    <div class="progress-wrap">
+      <div class="progress-label"><span>Daily Commitment</span><span id="progressText">0 / 17 Completed</span></div>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    </div>
+    <button class="already-done-btn" onclick="markAllDone()">✠ Already Completed Today — Mark All Done</button>
+    <div class="section-title">Opening Prayer for Chastity</div>
+    <div class="prayer-card" id="p0">
+      <div class="prayer-title"><span class="prayer-title-text">St. Thomas Aquinas — For Chastity</span><button class="check-btn" onclick="togglePrayer('p0')">✓</button></div>
+      <div class="prayer-text">Dear Jesus, I know that every perfect gift, and especially that of chastity, depends on the power of Your providence. Without You a mere creature can do nothing. Therefore, I beg You to defend by Your grace the chastity and purity of my body and soul. And if I have ever imagined or sensed anything that could stain my chastity and purity, blot it out, Supreme Lord of my powers, that I may advance with a pure heart in Your love and service, offering myself on the most pure altar of Your divinity all the days of my life. Amen.</div>
+    </div>
+    <div class="section-title" style="margin-top:32px">Fifteen Hail Marys</div>
+    <div class="form-toggle">
+      <button class="form-btn active" id="shortFormBtn" onclick="setForm('short')">Short Form</button>
+      <button class="form-btn" id="longFormBtn" onclick="setForm('long')">Long Form</button>
+    </div>
+    <div id="shortFormList">
+      <div class="hm-card" id="hm1"><div class="hm-header"><span class="hm-number">I</span><span class="hm-title-text">For our society and culture</span><span class="hm-response">✠ Hail Mary…</span><button class="check-btn" onclick="togglePrayer('hm1')">✓</button></div></div>
+      <div class="hm-card" id="hm2"><div class="hm-header"><span class="hm-number">II</span><span class="hm-title-text">For our relationships</span><span class="hm-response">✠ Hail Mary…</span><button class="check-btn" onclick="togglePrayer('hm2')">✓</button></div></div>
+      <div class="hm-card" id="hm3"><div class="hm-header"><span class="hm-number">III</span><span class="hm-title-text">For modesty</span><span class="hm-response">✠ Hail Mary…</span><button class="check-btn" onclick="togglePrayer('hm3')">✓</button></div></div>
+      <div class="hm-card" id="hm4"><div class="hm-header"><span class="hm-number">IV</span><span class="hm-title-text">For our five senses</span><span class="hm-response">✠ Hail Mary…</span><button class="check-btn" onclick="togglePrayer('hm4')">✓</button></div></div>
+      <div class="hm-card" id="hm5"><div class="hm-header"><span class="hm-number">V</span><span class="hm-title-text">For our sensuality</span><span class="hm-response">✠ Hail Mary…</span><button class="check-btn" onclick="togglePrayer('hm5')">✓</button></div></div>
+      <div class="hm-card" id="hm6"><div class="hm-header"><span class="hm-number">VI</span><span class="hm-title-text">For our imagination</span><span class="hm-response">✠ Hail Mary…</span><button class="check-btn" onclick="togglePrayer('hm6')">✓</button></div></div>
+      <div class="hm-card" id="hm7"><div class="hm-header"><span class="hm-number">VII</span><span class="hm-title-text">For our memory</span><span class="hm-response">✠ Hail Mary…</span><button class="check-btn" onclick="togglePrayer('hm7')">✓</button></div></div>
+      <div class="hm-card" id="hm8"><div class="hm-header"><span class="hm-number">VIII</span><span class="hm-title-text">For our power of estimation</span><span class="hm-response">✠ Hail Mary…</span><button class="check-btn" onclick="togglePrayer('hm8')">✓</button></div></div>
+      <div class="hm-card" id="hm9"><div class="hm-header"><span class="hm-number">IX</span><span class="hm-title-text">For our affectivity</span><span class="hm-response">✠ Hail Mary…</span><button class="check-btn" onclick="togglePrayer('hm9')">✓</button></div></div>
+      <div class="hm-card" id="hm10"><div class="hm-header"><span class="hm-number">X</span><span class="hm-title-text">For our intellect</span><span class="hm-response">✠ Hail Mary…</span><button class="check-btn" onclick="togglePrayer('hm10')">✓</button></div></div>
+      <div class="hm-card" id="hm11"><div class="hm-header"><span class="hm-number">XI</span><span class="hm-title-text">For our will</span><span class="hm-response">✠ Hail Mary…</span><button class="check-btn" onclick="togglePrayer('hm11')">✓</button></div></div>
+      <div class="hm-card" id="hm12"><div class="hm-header"><span class="hm-number">XII</span><span class="hm-title-text">For our conscience</span><span class="hm-response">✠ Hail Mary…</span><button class="check-btn" onclick="togglePrayer('hm12')">✓</button></div></div>
+      <div class="hm-card" id="hm13"><div class="hm-header"><span class="hm-number">XIII</span><span class="hm-title-text">For our hearts</span><span class="hm-response">✠ Hail Mary…</span><button class="check-btn" onclick="togglePrayer('hm13')">✓</button></div></div>
+      <div class="hm-card" id="hm14"><div class="hm-header"><span class="hm-number">XIV</span><span class="hm-title-text">For self-surrender</span><span class="hm-response">✠ Hail Mary…</span><button class="check-btn" onclick="togglePrayer('hm14')">✓</button></div></div>
+      <div class="hm-card" id="hm15"><div class="hm-header"><span class="hm-number">XV</span><span class="hm-title-text">For love</span><span class="hm-response">✠ Hail Mary…</span><button class="check-btn" onclick="togglePrayer('hm15')">✓</button></div></div>
+    </div>
+    <div id="longFormViewer">
+      <div class="lf-dots" id="lfDots"></div>
+      <div class="lf-panel" id="lfPanel"></div>
+    </div>
+    <div class="section-title" style="margin-top:36px">Closing Prayer</div>
+    <div class="prayer-card" id="p16">
+      <div class="prayer-title"><span class="prayer-title-text">Prayer to St. Thomas for Purity</span><button class="check-btn" onclick="togglePrayer('p16')">✓</button></div>
+      <div class="prayer-text">Chosen lily of innocence, pure St. Thomas, who kept chaste the robe of baptism and became an angel in the flesh after being girded by two angels, I implore you to commend me to Jesus, the Spotless Lamb, and to Mary, the Queen of Virgins. Gentle protector of my purity, ask them that I, who wear the holy sign of your victory over the flesh, may also share your purity, and after imitating you on earth may at last come to be crowned with you among the angels. Amen.</div>
+    </div>
+    <button class="reset-btn" onclick="resetAll()">✠ Reset for New Day</button>
+  </div>
+
+  <!-- SCRIPTURE -->
+  <div id="tab-scripture" class="tab-content">
+    <div class="section-title">The Armor of God</div>
+    <div class="quote-card"><div class="quote-mark">"</div><div class="quote-text">Finally, draw your strength from the Lord and from his mighty power. Put on the armor of God so that you may be able to stand firm against the tactics of the devil. For our struggle is not with flesh and blood but with the principalities, with the powers, with the world rulers of this present darkness, with the evil spirits in the heavens.</div><div class="quote-ref">Ephesians 6:10–12</div></div>
+    <div class="ornament">✦ ✠ ✦</div>
+    <div class="section-title">On Chastity</div>
+    <div class="quote-card"><div class="quote-mark">"</div><div class="quote-text">Blessed are the pure in heart, for they shall see God.</div><div class="quote-ref">Matthew 5:8</div></div>
+    <div class="quote-card"><div class="quote-mark">"</div><div class="quote-text">Do you not know that your body is a temple of the Holy Spirit within you, which you have from God? You are not your own, for you were bought with a price. So glorify God in your body.</div><div class="quote-ref">1 Corinthians 6:19–20</div></div>
+    <div class="quote-card"><div class="quote-mark">"</div><div class="quote-text">For this is the will of God, your sanctification: that you abstain from sexual immorality; that each one of you know how to control his own body in holiness and honor.</div><div class="quote-ref">1 Thessalonians 4:3–4</div></div>
+    <div class="section-title">On Perseverance</div>
+    <div class="quote-card"><div class="quote-mark">"</div><div class="quote-text">No temptation has overtaken you except what is common to mankind. And God is faithful; he will not let you be tempted beyond what you can bear. But with the temptation he will also provide the way of escape, that you may be able to endure it.</div><div class="quote-ref">1 Corinthians 10:13</div></div>
+    <div class="quote-card"><div class="quote-mark">"</div><div class="quote-text">Be sober-minded; be watchful. Your adversary the devil prowls around like a roaring lion, seeking someone to devour. Resist him, firm in your faith.</div><div class="quote-ref">1 Peter 5:8–9</div></div>
+  </div>
+
+  <!-- WISDOM -->
+  <div id="tab-inspiration" class="tab-content">
+    <div class="section-title">From the Saints</div>
+    <div class="inspiration-card"><div class="inspiration-source">St. John Paul II · Theology of the Body</div><div class="inspiration-text">The body, and it alone, is capable of making visible what is invisible: the spiritual and the divine. It was created to transfer into the visible reality of the world the mystery hidden since time immemorial in God, and thus to be a sign of it.</div></div>
+    <div class="inspiration-card"><div class="inspiration-source">St. Josemaría Escrivá</div><div class="inspiration-text">Purity is not something negative. It is a joyful affirmation. You have received a body from God, which you must use for His glory — keeping it clean, not as a prison, but as a temple.</div></div>
+    <div class="inspiration-card"><div class="inspiration-source">St. Alphonsus Liguori</div><div class="inspiration-text">He who does not pray is sure to be damned. He who prays is sure of salvation. All the blessed have been saved by prayer. Those who perished have perished because they did not pray.</div></div>
+    <div class="ornament">✦ ✠ ✦</div>
+    <div class="section-title">On the Warfare</div>
+    <div class="inspiration-card"><div class="inspiration-source">G.K. Chesterton</div><div class="inspiration-text">The man who makes a vow makes an appointment with himself at some distant time or place. The danger of it is that himself should not keep the appointment. And in modern times this terror of one's self — of the weakness and mutability of one's self — has perilously increased. The man who has made a vow and kept it has proved something about his soul. He has discovered that there is a self.</div></div>
+    <div class="inspiration-card"><div class="inspiration-source">Venerable Fulton Sheen</div><div class="inspiration-text">The most important hour of your day is the hour you spend with God. The devil knows this. That is why he will do everything to prevent it — with distraction, with discouragement, with the noise of the world. Meet him in silence. He cannot follow you there.</div></div>
+    <div class="inspiration-card"><div class="inspiration-source">St. Thomas Aquinas</div><div class="inspiration-text">The things that we love tell us what we are. Guard your loves, and you guard your soul. The angelic warfare begins in the interior life — in what we allow our hearts to dwell upon.</div></div>
+  </div>
+
+  <!-- FIDELITY LOG -->
+  <div id="tab-log" class="tab-content">
+    <div class="section-title">Fidelity Log</div>
+    <div id="logGrid"></div>
+    <div class="log-legend">
+      <div class="log-legend-item"><div class="log-legend-dot" style="background:var(--green)"></div>Full</div>
+      <div class="log-legend-item"><div class="log-legend-dot" style="background:rgba(201,168,76,0.3);border:1px solid rgba(201,168,76,0.25)"></div>Partial</div>
+      <div class="log-legend-item"><div class="log-legend-dot" style="background:var(--panel);border:1px solid var(--border)"></div>None</div>
+    </div>
+  </div>
+
+  <!-- REMINDER -->
+  <div id="tab-reminder" class="tab-content">
+    <div class="section-title">Daily Reminder</div>
+    <div class="reminder-panel">
+      <div class="reminder-row">
+        <span class="reminder-label">Enable Daily Reminder</span>
+        <label class="reminder-toggle"><input type="checkbox" id="reminderToggle" onchange="toggleReminder()"><span class="reminder-slider"></span></label>
+      </div>
+      <div class="reminder-row">
+        <span class="reminder-label">Reminder Time</span>
+        <input type="time" class="time-input" id="reminderTime" value="07:00" onchange="saveReminderTime()" disabled>
+      </div>
+      <div id="reminderStatus" class="reminder-status"></div>
+      <p class="reminder-note">The reminder requires notification permission and activates while this page is open in your browser. For a reliable daily alarm independent of the browser, set a recurring alarm in your phone's clock app as well.</p>
+    </div>
+  </div>
+
+  <footer>
+    <p>Angelic Warfare Confraternity</p>
+    <p>Under the protection of the Blessed Virgin Mary<br>and St. Thomas Aquinas, O.P.</p>
+    <p style="margin-top:10px;opacity:.4">✠ Ora et Labora ✠</p>
+  </footer>
+</div>
+
+<script>
+const ROMANS=['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII','XIII','XIV','XV'];
+const PRAYERS=[
+  {title:'For our society and culture',petition:'Dear Jesus, bless our social and cultural climate. Grant that our society may be purified of everything contrary to chastity, and that we may have the strength to resist the pressures of prevailing ideologies.',verse:'"In the world you have tribulation; but be of good cheer, I have conquered the world." (Jn. 16:33) — "In all these things we are more than conquerors through him who loved us." (Rom. 8:37)'},
+  {title:'For our relationships',petition:'Dear Jesus, bless our relationships. Grant that they will be holy, healthy, and honorable at all times.',verse:'"Having purified your souls by your obedience to the truth for a sincere love of the brethren, love one another earnestly from the heart." (1 Pet. 1:22)'},
+  {title:'For modesty',petition:'Dear Jesus, bless our efforts at modesty. Grant that how we dress and carry ourselves may veil what should be veiled, and give us the strength to resist evil fashions and the glamour of sin.',verse:'"Do not be conformed to this age, but be transformed by the renewal of your mind." (Rom. 12:2)'},
+  {title:'For our five senses',petition:'Dear Jesus, bless our five senses. Grant that the things we see, the music and jokes we hear, the food and drink we eat, and the encounters we have through touch may all be pure and holy.',verse:'"Seek the things that are above." (Col. 3:1)'},
+  {title:'For our sensuality',petition:'Dear Jesus, bless our sensuality. Grant that our impulses may not go after base pleasures, but will be freed by wisdom and inflamed for what is good.',verse:'"In your struggle against sin you have not yet resisted to the point of shedding your blood." (Heb. 12:4)'},
+  {title:'For our imagination',petition:'Dear Jesus, bless our imagination. Grant that we may be preserved from the fantasies and daydreams that defile us, that all impure images may vanish, and that we may be protected from all the assaults of demons.',verse:'"Be renewed in the spirit of your minds…" (Eph. 4:23, 6:11)'},
+  {title:'For our memory',petition:'Dear Jesus, bless our memory. Grant that no memories of past experiences may disturb us, but that the Lord may touch and heal us through hope for a better future.',verse:'"And every one who thus hopes in him purifies himself as he is pure." (1 Jn. 3:1)'},
+  {title:'For our power of estimation',petition:'Dear Jesus, bless our power of estimation. Grant that we may quickly sense dangers to chastity, instinctively flee from them, and that we may never turn away from higher and more difficult goods for the sake of sinful self-indulgence.',verse:'"For what shall it profit a man to gain the whole world and lose his soul?" (Mk. 8:36)'},
+  {title:'For our affectivity',petition:'Dear Jesus, bless our affectivity. Grant that we may love chastity and rejoice in it, that all of our emotions may be in harmony with what is right, and that no sadness, discouragement, fear, insecurity, or loneliness may afflict us unto sexual sin.',verse:'"For the grace of God has appeared, saving all and training us to reject godless ways and worldly passions and to live temperately, justly, and devoutly in this age…" (Titus 2:11-12)'},
+  {title:'For our intellect',petition:'Dear Jesus, bless our intellect. Grant that it may be purged of all false beliefs and all misunderstandings of human sexuality, and that the good angels may flood our intellects with thoughts that are true, honorable, just, pure, lovely, and gracious.',verse:'"Finally, brethren, whatever is true, whatever is honorable, whatever is just, whatever is pure, whatever is lovely, whatever is gracious, if there is any excellence, if there is anything worthy of praise, think about these things." (Phil. 4:8)'},
+  {title:'For our will',petition:'Dear Jesus, bless our will. Grant that it may never be opposed by our sensuality, that it may never be conflicted in the moment, but that it may hold fast to chastity no matter how difficult it may be.',verse:'"For the Son of God, Jesus Christ…was not Yes and No; but in him it is always Yes. For all the promises of God find their Yes in him." (2 Cor. 1:19-20)'},
+  {title:'For our conscience',petition:'Dear Jesus, bless our conscience. Grant that it may be swift to judge what is chaste, swifter to execute it, and preserved completely from the suggestions of demons.',verse:'"How much more shall the blood of Christ, who through the eternal Spirit offered himself without blemish to God, purify your conscience from dead works to serve the living God?" (Heb. 9:14)'},
+  {title:'For our hearts',petition:'Dear Jesus, bless our hearts. Grant that the place where Christ abides in us with the Father and the Spirit may become the place where we live with the Holy Trinity in friendship.',verse:'"If a man loves me, he will keep my word, and my Father will love him, and we will come to him and make our home with him." (Jn. 14:23)'},
+  {title:'For self-surrender',petition:'Dear Jesus, grant us the grace of self-surrender. Grant that we may hand over to God nothing less than our whole lives.',verse:'"Father, into your hands I commend my spirit." (Lk. 23:46)'},
+  {title:'For love',petition:'Dear Jesus, give us your love.',verse:'"In this is love, not that we loved God but that he loved us and sent his Son to be the expiation for our sins." (1 Jn. 4:10) — "But God shows his love for us in that while we were yet sinners Christ died for us." (Rom. 5:8)'}
+];
+
+const ALL_IDS=['p0','hm1','hm2','hm3','hm4','hm5','hm6','hm7','hm8','hm9','hm10','hm11','hm12','hm13','hm14','hm15','p16'];
+const TOTAL=ALL_IDS.length;
+let completed={},currentForm='short',currentLFIndex=0;
+
+function todayKey(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+
+function loadState(){
+  try{
+    const day=localStorage.getItem('awc_day'),today=todayKey();
+    if(day===today){const s=localStorage.getItem('awc_session');if(s){const p=JSON.parse(s);completed=p.completed||{};currentForm=p.form||'short';currentLFIndex=p.lfIndex||0;}}
+    else{completed={};currentForm='short';currentLFIndex=0;localStorage.setItem('awc_day',today);}
+  }catch(e){}
+}
+
+function save(){
+  try{
+    localStorage.setItem('awc_day',todayKey());
+    localStorage.setItem('awc_session',JSON.stringify({completed,form:currentForm,lfIndex:currentLFIndex}));
+    const count=ALL_IDS.filter(id=>completed[id]).length;
+    const log=getLog();log[todayKey()]=count;
+    localStorage.setItem('awc_log',JSON.stringify(log));
+  }catch(e){}
+}
+
+function getLog(){try{return JSON.parse(localStorage.getItem('awc_log'))||{};}catch(e){return{};}}
+
+function updateProgress(){
+  const count=ALL_IDS.filter(id=>completed[id]).length;
+  document.getElementById('progressText').textContent=count+' / '+TOTAL+' Completed';
+  document.getElementById('progressFill').style.width=Math.round(count/TOTAL*100)+'%';
+}
+
+function togglePrayer(id){
+  completed[id]=!completed[id];
+  const card=document.getElementById(id);if(card)card.classList.toggle('completed',completed[id]);
+  if(currentForm==='long')renderDots();
+  save();updateProgress();
+}
+
+function markAllDone(){
+  ALL_IDS.forEach(function(id){completed[id]=true;const c=document.getElementById(id);if(c)c.classList.add('completed');});
+  if(currentForm==='long'){renderDots();renderLFPrayer(currentLFIndex);}
+  save();updateProgress();
+}
+
+function resetAll(){
+  if(!confirm('Reset all prayers for a new day?'))return;
+  completed={};currentLFIndex=0;
+  ALL_IDS.forEach(function(id){const c=document.getElementById(id);if(c)c.classList.remove('completed');});
+  if(currentForm==='long'){renderDots();renderLFPrayer(0);}
+  save();updateProgress();
+}
+
+function setForm(form){
+  currentForm=form;
+  document.getElementById('shortFormBtn').classList.toggle('active',form==='short');
+  document.getElementById('longFormBtn').classList.toggle('active',form==='long');
+  document.getElementById('shortFormList').style.display=form==='short'?'block':'none';
+  const lv=document.getElementById('longFormViewer');
+  if(form==='long'){lv.classList.add('visible');renderDots();renderLFPrayer(currentLFIndex);}
+  else{lv.classList.remove('visible');}
+  save();
+}
+
+function renderDots(){
+  const el=document.getElementById('lfDots');el.innerHTML='';
+  for(let i=0;i<15;i++){
+    const btn=document.createElement('button');btn.className='lf-dot';
+    if(i===currentLFIndex)btn.classList.add('current');
+    if(completed['hm'+(i+1)])btn.classList.add('done');
+    btn.title=PRAYERS[i].title;
+    btn.onclick=(function(idx){return function(){renderLFPrayer(idx);};})(i);
+    el.appendChild(btn);
+  }
+}
+
+function renderLFPrayer(idx){
+  currentLFIndex=idx;const p=PRAYERS[idx];const isDone=!!completed['hm'+(idx+1)];
+  document.getElementById('lfPanel').innerHTML=
+    '<div class="lf-panel-inner">'+
+    '<div class="lf-num">Hail Mary '+ROMANS[idx]+' of XV</div>'+
+    '<div class="lf-title">'+p.title+'</div>'+
+    '<div class="lf-petition">'+p.petition+'</div>'+
+    '<div class="lf-verse">'+p.verse+'</div>'+
+    '<div class="lf-hail">✠ Hail Mary…</div>'+
+    '<div class="lf-nav">'+
+    '<button class="lf-arrow" onclick="stepLF(-1)"'+(idx===0?' disabled':'')+'>← Prev</button>'+
+    '<div class="lf-mark-area"><button class="lf-mark-btn'+(isDone?' done':'')+'" onclick="markLFCurrent()">✓</button><span class="lf-mark-label">Done</span></div>'+
+    '<span class="lf-counter">'+(idx+1)+' / 15</span>'+
+    '<button class="lf-arrow" onclick="stepLF(1)"'+(idx===14?' disabled':'')+'>Next →</button>'+
+    '</div></div>';
+  renderDots();save();
+}
+
+function stepLF(dir){const next=currentLFIndex+dir;if(next>=0&&next<15)renderLFPrayer(next);}
+
+function markLFCurrent(){
+  const hmId='hm'+(currentLFIndex+1);completed[hmId]=!completed[hmId];
+  const sc=document.getElementById(hmId);if(sc)sc.classList.toggle('completed',completed[hmId]);
+  renderLFPrayer(currentLFIndex);updateProgress();save();
+  if(completed[hmId]&&currentLFIndex<14)setTimeout(function(){renderLFPrayer(currentLFIndex+1);},400);
+}
+
+function renderLog(){
+  const log=getLog(),container=document.getElementById('logGrid');container.innerHTML='';
+  const today=new Date();today.setHours(0,0,0,0);
+  const startDate=new Date(today);startDate.setDate(today.getDate()-69);
+  startDate.setDate(startDate.getDate()-startDate.getDay());
+  const ml=document.createElement('div');ml.className='log-month-label';ml.textContent='Past 10 Weeks';container.appendChild(ml);
+  const lr=document.createElement('div');lr.className='log-day-labels';
+  ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].forEach(function(d){const l=document.createElement('div');l.className='log-day-label';l.textContent=d;lr.appendChild(l);});
+  container.appendChild(lr);
+  const grid=document.createElement('div');grid.className='log-grid';
+  const cur=new Date(startDate);const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  while(cur<=today||cur.getDay()!==0){
+    const ds=cur.getFullYear()+'-'+String(cur.getMonth()+1).padStart(2,'0')+'-'+String(cur.getDate()).padStart(2,'0');
+    const cell=document.createElement('div');cell.className='log-cell';
+    const isFuture=cur>today,isToday=ds===todayKey(),count=log[ds];
+    if(isToday)cell.classList.add('today');
+    if(isFuture)cell.style.opacity='.1';
+    else if(count===TOTAL)cell.classList.add('full');
+    else if(count>0)cell.classList.add('partial');
+    else cell.classList.add('empty');
+    const tip=document.createElement('div');tip.className='log-tooltip';
+    tip.textContent=MON[cur.getMonth()]+' '+cur.getDate()+(count?' · '+count+'/'+TOTAL:'');
+    cell.appendChild(tip);grid.appendChild(cell);
+    cur.setDate(cur.getDate()+1);
+    if(cur>today&&cur.getDay()===0)break;
+  }
+  container.appendChild(grid);
+}
+
+let reminderInterval=null;
+function toggleReminder(){
+  const on=document.getElementById('reminderToggle').checked;
+  document.getElementById('reminderTime').disabled=!on;
+  if(on){
+    if('Notification' in window&&Notification.permission!=='granted'){
+      Notification.requestPermission().then(function(p){
+        if(p==='granted'){scheduleReminder();setReminderStatus('Reminder set.');}
+        else{setReminderStatus('Permission denied — enable notifications in browser settings.');document.getElementById('reminderToggle').checked=false;document.getElementById('reminderTime').disabled=true;}
+      });
+    }else{scheduleReminder();setReminderStatus('Reminder active.');}
+  }else{clearReminder();setReminderStatus('');}
+  try{localStorage.setItem('awc_reminder',JSON.stringify({on,time:document.getElementById('reminderTime').value}));}catch(e){}
+}
+function saveReminderTime(){scheduleReminder();setReminderStatus('Reminder updated.');try{localStorage.setItem('awc_reminder',JSON.stringify({on:true,time:document.getElementById('reminderTime').value}));}catch(e){}}
+function scheduleReminder(){
+  clearReminder();
+  reminderInterval=setInterval(function(){
+    const now=new Date(),tv=document.getElementById('reminderTime').value;if(!tv)return;
+    const pts=tv.split(':');
+    if(now.getHours()===parseInt(pts[0])&&now.getMinutes()===parseInt(pts[1])&&now.getSeconds()<30){
+      const count=ALL_IDS.filter(function(id){return completed[id];}).length;
+      if(count<TOTAL&&Notification.permission==='granted')
+        new Notification('Angelic Warfare Confraternity',{body:'Time for your daily prayers.'+(count>0?' ('+count+'/'+TOTAL+' done)':'')});
+    }
+  },20000);
+}
+function clearReminder(){if(reminderInterval){clearInterval(reminderInterval);reminderInterval=null;}}
+function setReminderStatus(msg){document.getElementById('reminderStatus').textContent=msg;}
+function loadReminder(){
+  try{const r=JSON.parse(localStorage.getItem('awc_reminder'));
+    if(r&&r.on){document.getElementById('reminderToggle').checked=true;document.getElementById('reminderTime').value=r.time||'07:00';document.getElementById('reminderTime').disabled=false;scheduleReminder();setReminderStatus('Reminder active for '+(r.time||'07:00')+'.');}
+  }catch(e){}
+}
+
+function switchTab(name,btn){
+  document.querySelectorAll('.tab-content').forEach(function(t){t.classList.remove('active');});
+  document.querySelectorAll('.nav-tab').forEach(function(b){b.classList.remove('active');});
+  document.getElementById('tab-'+name).classList.add('active');btn.classList.add('active');
+  if(name==='log')renderLog();
+}
+
+const DAYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const dn=new Date();
+document.getElementById('dateDisplay').textContent=DAYS[dn.getDay()]+', '+MONTHS[dn.getMonth()]+' '+dn.getDate()+', '+dn.getFullYear();
+
+loadState();
+ALL_IDS.forEach(function(id){if(completed[id]){const c=document.getElementById(id);if(c)c.classList.add('completed');}});
+setForm(currentForm);updateProgress();loadReminder();
+</script>
+</body>
+</html>
