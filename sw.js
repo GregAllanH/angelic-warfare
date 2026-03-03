@@ -1,4 +1,4 @@
-const CACHE = 'awc-v1';
+const CACHE = 'awc-v2';
 const FILES = ['/', '/index.html', '/manifest.json'];
 
 self.addEventListener('install', function(e) {
